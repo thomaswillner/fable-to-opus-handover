@@ -14,11 +14,28 @@ When a more capable model (Claude Fable 5) hands its job to a less capable one (
 | **[eval-results.md](eval-results.md)** | The complete evidence trail: 4 rounds, 46 artifact-verified Opus 4.8 subagent runs, scores per test per arm, the failures found, and the revisions they produced. | Read before trusting any claim in the other two files. |
 | **[evals/](evals/)** | Reproducible fixture generator and test prompts for the core scenarios. | Re-run the validation against your own model/harness. |
 
+## Which file do I use?
+
+The three instruction documents are the same doctrine at three zoom levels — think **book → chapter → index card**:
+
+```
+handover-opus-4.8.md            the book:   full doctrine + rationale + eval suite  → read, don't paste
+  └─ OPUS-OPERATING-LAYER.md    the chapter: deployable instruction block (~1,300 w) → paste this (default)
+      └─ OPUS-OPERATING-LAYER-MINI.md  the card: 8 rules (~350 w)                    → paste when budget is tight
+```
+
+| Your situation | Use |
+|---|---|
+| Standard deployment — Claude Project, API system prompt, `CLAUDE.md`-style file | **`OPUS-OPERATING-LAYER.md`** — the default. Self-contained; the handover is not required alongside it. |
+| Tight instruction budget (long system prompts already, token-costly contexts, many stacked instructions) | **`OPUS-OPERATING-LAYER-MINI.md`** — keeps the eval-proven safety rules (destructive-action gate validated 3/3 under it); drops explanatory depth, so edge-case behavior may be less consistent. |
+| Understanding *why* a rule exists, adapting the doctrine to another model, or running your own evals | **`handover-opus-4.8.md`** — reference reading. Never paste it as an instruction; length dilutes instruction-following. |
+| Deciding whether to trust any of this | **`eval-results.md`** first, then [`evals/`](evals/) to reproduce it. |
+
 ## Quickstart
 
-1. Copy the contents of [`OPUS-OPERATING-LAYER.md`](OPUS-OPERATING-LAYER.md).
-2. Paste it as the project/system instruction for your Opus 4.8 deployment (Claude Projects, API system prompt, or a `CLAUDE.md`-style instruction file the agent reads at start).
-3. That's it. The full handover document is optional context — the layer is self-contained.
+1. Pick your file from the table above — `OPUS-OPERATING-LAYER.md` unless you have a reason not to.
+2. Paste its full contents as the project/system instruction for your Opus 4.8 deployment (Claude Projects, API system prompt, or a `CLAUDE.md`-style instruction file the agent reads at start).
+3. That's it. Don't paste the handover alongside it, and don't paste both layers — one layer per deployment.
 
 ## What is actually proven (and what isn't)
 
