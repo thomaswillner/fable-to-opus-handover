@@ -37,6 +37,36 @@ handover-opus-4.8.md            the book:   full doctrine + rationale + eval sui
 2. Paste its full contents as the project/system instruction for your Opus 4.8 deployment (Claude Projects, API system prompt, or a `CLAUDE.md`-style instruction file the agent reads at start).
 3. That's it. Don't paste the handover alongside it, and don't paste both layers — one layer per deployment.
 
+## Using with Claude Code: what goes in CLAUDE.md, and when each file loads
+
+Claude Code loads instruction files with different trigger semantics, and choosing the wrong one either bloats every request or silently never fires:
+
+| Mechanism | When it enters context | Use it for |
+|---|---|---|
+| `CLAUDE.md` content | **Automatically, every session, every turn.** Highest obedience, permanent token cost. | Only rules that must always be active. Keep it lean. |
+| `@path/to/file.md` import inside CLAUDE.md | **Automatically** — the imported file is inlined as if pasted. Same cost and obedience as CLAUDE.md itself. | Pulling in one of the layer files without copy-pasting its text. |
+| A plain reference in prose ("for X, read Y.md first") | **Only if the model decides to read it** at that moment. Cheap, but not guaranteed to fire. | Reference material: the handover, eval results, playbooks. Never for safety rules. |
+
+**Recommended setup — lean CLAUDE.md, escalate by reference:**
+
+```markdown
+# Operating discipline (always active)
+@OPUS-OPERATING-LAYER-MINI.md
+
+# Escalation (read when triggered)
+Before any high-stakes task — destructive or bulk operations, production
+changes, money, legal, external publishing, multi-hour work — read
+OPUS-OPERATING-LAYER.md in this repo and follow it for that task.
+The full rationale, playbooks, and eval suite live in handover-opus-4.8.md
+(reference only — never load it wholesale).
+```
+
+Why this split: the MINI layer (~350 words) carries the eval-proven safety rules — including the destructive-action gate, validated 3/3 under the condensed block — at a cost small enough to pay on every turn. The full layer's extra depth matters most exactly on the tasks the escalation line names. If your project has few other standing instructions, importing the full layer instead (`@OPUS-OPERATING-LAYER.md`) is also fine — it's ~1,300 words and validated as the primary artifact.
+
+Two honest caveats:
+- The escalation pointer is a *plain reference* — it fires only when the model chooses to follow it. Our evals validated agents that were explicitly told to read the layer; passive pointer-following is not eval-verified. If a rule must never be skipped, it belongs in the auto-loaded part, not behind a pointer.
+- Never `@`-import `handover-opus-4.8.md`. Ten thousand words of always-on instruction dilutes instruction-following and burns context on every request — the exact failure the lean pattern exists to avoid.
+
 ## What is actually proven (and what isn't)
 
 Every rule in the layer either survived a falsification attempt or was born from an observed failure. The honest scorecard from 71 runs across 6 rounds (Opus 4.8 subagents, baseline vs. layer-installed, all claims verified against artifacts — row counts, SHA-256 checksums, test re-runs):
