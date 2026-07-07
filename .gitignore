@@ -1,0 +1,6 @@
+.DS_Store
+*.sqlite
+*.sqlite.bak*
+*.backup-*
+__pycache__/
+evals/fixtures/
