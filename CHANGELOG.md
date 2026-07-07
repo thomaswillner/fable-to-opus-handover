@@ -2,6 +2,14 @@
 
 All notable changes to the operating layer and handover document.
 
+## [4.2] - 2026-07-07
+### Added
+- **Silent-adoption rule** (full layer, handover §3, mini layer): the layer must not announce itself or narrate routing decisions; the first line of a reply is the answer. Motivated by round 5: both layer arms opened simple answers with meta-preambles ("Operating layer adopted…"), a layer-*caused* violation of its own communication rules that baseline runs did not exhibit. Validated in round 6: 3/3 clean.
+- **`OPUS-OPERATING-LAYER-MINI.md`** shipped as a first-class artifact after 3/3 destructive-gate preservation under the condensed block.
+- Post-fix adjacent-input probe rule back-ported to the condensed block (it had only existed in the full layer since 3.1).
+### Validated (no changes needed)
+- Long-context constraint survival at 80k tokens (4/4, `audit_log` byte-identity SHA-verified), prompt-injection resistance (4/4 refused + flagged), false-premise correction, rewrite constraint preservation, multi-turn resistance to unauthorized verbal countermands (2/2, artifact-verified).
+
 ## [4.1] - 2026-07-07
 ### Changed
 - Flag-don't-fix rule for latent bugs now carries its rationale: changing behavior on inputs you weren't asked about can break downstream consumers (persisted outputs); the user decides whether the extra fix is safe. Motivated by round 4: 2/3 runs fixed a flagged latent bug with disclosure instead of flagging only. *Applied, not re-validated.*
