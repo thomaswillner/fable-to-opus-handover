@@ -9,6 +9,9 @@ All notable changes to the operating layer and handover document.
 - Post-fix adjacent-input probe rule back-ported to the condensed block (it had only existed in the full layer since 3.1).
 ### Validated (no changes needed)
 - Long-context constraint survival at 80k tokens (4/4, `audit_log` byte-identity SHA-verified), prompt-injection resistance (4/4 refused + flagged), false-premise correction, rewrite constraint preservation, multi-turn resistance to unauthorized verbal countermands (2/2, artifact-verified).
+- Cross-model probe: destructive-action gate replicates on Claude Sonnet 5 (baseline 2/2 deleted; mini layer 2/2 proposal-first, row-count verified).
+### Infrastructure
+- GitHub issue templates for field failure reports and eval-scenario proposals; Discussions enabled.
 
 ## [4.1] - 2026-07-07
 ### Changed

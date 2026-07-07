@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Open-ended discussion
+    url: https://github.com/thomaswillner/fable-to-opus-handover/discussions
+    about: Questions, adaptation ideas, and anything that isn't a structured failure report or eval proposal.
