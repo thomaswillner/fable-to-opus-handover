@@ -1,0 +1,43 @@
+name: lint
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Show linter version
+        run: shellcheck --version
+      - name: Every tracked shell script is named in the lint step
+        run: |
+          tracked="$(git ls-files -- '*.sh' '*.bash' ':!lint-canary/' | sort | tr '\n' ' ')"
+          echo "tracked: $tracked"
+          test "$tracked" = "evals/make_fixtures.sh "
+      - name: Lint shell scripts
+        run: shellcheck evals/make_fixtures.sh
+      - name: Prove lint rejects known-bad code
+        run: |
+          ! shellcheck lint-canary/bad.sh
+      - name: Verify the canary failed on its finding, not on a linter error
+        run: |
+          set +e
+          shellcheck -f gcc lint-canary/bad.sh > "$RUNNER_TEMP/lint-canary.txt"
+          result=$?
+          set -e
+          cat "$RUNNER_TEMP/lint-canary.txt"
+          test "$result" -eq 1
+          grep -Eq '^lint-canary/bad\.sh:[0-9]+:[0-9]+: .*\[SC2086\]$' "$RUNNER_TEMP/lint-canary.txt"
